@@ -1,0 +1,95 @@
+# Source: hello-world-chart/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hello-world-chart
+  labels:
+    app.kubernetes.io/name: hello-world-chart
+    app.kubernetes.io/instance: hello-world-chart
+    app.kubernetes.io/version: "1.16.0"
+---
+# Source: hello-world-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: teledoc2
+  name: hello-world-chart
+  labels:
+    app.kubernetes.io/name: hello-world-chart
+    app.kubernetes.io/instance: hello-world-chart
+    app.kubernetes.io/version: "1.16.0"
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: hello-world-chart
+    app.kubernetes.io/instance: hello-world-chart
+---
+# Source: hello-world-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: teledoc2
+  name: hello-world-chart
+  labels:
+    app.kubernetes.io/name: hello-world-chart
+    app.kubernetes.io/instance: hello-world-chart
+    app.kubernetes.io/version: "1.16.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hello-world-chart
+      app.kubernetes.io/instance: hello-world-chart
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hello-world-chart
+        app.kubernetes.io/instance: hello-world-chart
+    spec:
+      serviceAccountName: hello-world-chart
+      securityContext:
+        {}
+      containers:
+        - name: hello-world-chart
+          securityContext:
+            {}
+          image: "jansonluan/jl-helloworld:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources: {}
+---
+# Source: hello-world-chart/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: teledoc2
+  name: hello-world-chart
+  labels:
+    app.kubernetes.io/name: hello-world-chart
+    app.kubernetes.io/instance: hello-world-chart
+    app.kubernetes.io/version: "1.16.0"
+spec:
+  rules:
+    - host: "kubernetes22.docker.internal"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: hello-world-chart
+              servicePort: 80
