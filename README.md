@@ -16,8 +16,10 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 3. Setup namespace from file
 ```
-kubectl create namespace teledoc2
+kubectl create namespace td2
 kubectl create -f manifest.yaml
+kubectl get all
+kubectl get 
 ```
 - you should be able to load the website: "kubernetes22.docker.internal"
 
