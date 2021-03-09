@@ -18,8 +18,8 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 ```
 kubectl create namespace teledoc2
 kubectl create -f manifest.yaml
-
 ```
+- you should be able to load the website: "kubernetes22.docker.internal"
 
 4. Setup K8s Dashboard
 ```
